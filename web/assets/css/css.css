@@ -166,3 +166,6 @@ overflow: auto;
 .navbar-nav{
     font-size:18px;
 }
+.modal-body{
+    text-align: center;
+}

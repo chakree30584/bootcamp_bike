@@ -76,6 +76,23 @@ $(document).ready(function(e){
             e.preventDefault();
         });
         
+        $('#rentform').on("submit", function(e){
+                $("#borrowresult").modal("show");
+                $.ajax({
+                type: 'POST',
+                        data: $('#rentform').serialize(),
+                        url: 'borrowbike',
+                        dataType : 'json',
+                        success: function(result) {
+                                $("#borrowtextresult").html('<img src="../assets/img/bike_blue.png" style="width:500px; margin:0 auto;"><br><br><br>'+
+                                        '<h3 style="margin:0 auto;">'+result['msg']+'</h3><br><br>');
+                                setTimeout(refresh,3000);
+                        }
+                });
+            return false;
+            e.preventDefault();
+        });
+        
         
 });
         function Ying(){

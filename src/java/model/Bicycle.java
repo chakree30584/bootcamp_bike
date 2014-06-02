@@ -10,6 +10,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -112,8 +114,8 @@ public class Bicycle {
         }
         return status > 0;
     }
-    
-    public static Bicycle getBicycle(){
+
+    public static Bicycle getBicycle() {
         Bicycle bike = null;
         String sqlCmd = "SELECT * FROM bike WHERE bstatus = 0 ORDER BY RAND() LIMIT 1";
         try {
@@ -129,67 +131,104 @@ public class Bicycle {
         }
         return bike;
     }
-    
-    public static ArrayList<Bicycle> getAllBicycle(){
+
+    public static ArrayList<Bicycle> getAllBicycle() {
         ArrayList<Bicycle> arrBicycle = new ArrayList<Bicycle>();
         Bicycle bike = null;
-        try{
+        try {
             Connection con = ConnectionBuilder.getConnection();
             String sqlCmd = "SELECT * FROM bike";
             PreparedStatement stm = con.prepareStatement(sqlCmd);
             ResultSet rs = stm.executeQuery();
-            while(rs.next()){
+            while (rs.next()) {
                 bike = new Bicycle(rs.getInt("bid"), rs.getString("model"),
                         rs.getInt("bstatus"), rs.getInt("wrent"));
                 arrBicycle.add(bike);
                 bike = null;
             }
-        }catch(SQLException ex){
+        } catch (SQLException ex) {
             System.out.println(ex);
         }
         return arrBicycle;
     }
-    public static void gendBike(int id) throws SQLException{
+
+    public static void gendBike(int id){
+        try {
             Connection con = ConnectionBuilder.getConnection();
             String sqlCmd = "UPDATE bike set bstatus=1,wrent=? where bstatus=0 limit 1";
             PreparedStatement stm = con.prepareStatement(sqlCmd);
             stm.setInt(1, id);
             stm.executeUpdate();
-            User a =User.getById(id);
-            
-            int score = a.getBan();
-            score--;
-            a.setBan(score*-1);
-            System.out.println(a.getBan());
-            a.updateUser();
-            
-                  
-        
+            User a = User.getById(id);
+            a.addPoint(-1, "borrow");
+        } catch (SQLException ex) {
+            Logger.getLogger(Bicycle.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
-    public static void endBike(int id) throws SQLException{
+
+    public static void endBike(int id){
+        try {
             Connection con = ConnectionBuilder.getConnection();
             String sqlCmd = "UPDATE bike set bstatus=0,wrent=null where bstatus=1 and wrent = ?";
             PreparedStatement stm = con.prepareStatement(sqlCmd);
             stm.setInt(1, id);
             stm.executeUpdate();
-            User a =User.getById(id);
-            a.setBan((a.getBan())*-1);
-            a.updateUser();
-    }
-    
-    public static int count() throws SQLException{
-         Connection con = ConnectionBuilder.getConnection();
-           String sqlCmd = "select * from bike where bstatus=0";
-           PreparedStatement stm = con.prepareStatement(sqlCmd);
-           ResultSet rs = stm.executeQuery();
-           int a = 0;
-           while(rs.next()){
-               a++;
-           }
-        return a;
-    }
-    
-    
+        } catch (SQLException ex) {
+            Logger.getLogger(Bicycle.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
+    public static int count(){
+        try {
+            Connection con = ConnectionBuilder.getConnection();
+            String sqlCmd = "select count(*) as num from bike where bstatus=0";
+            PreparedStatement stm = con.prepareStatement(sqlCmd);
+            ResultSet rs = stm.executeQuery();
+            int a = 0;
+            if (rs.next()) {
+                a = rs.getInt("num");
+            }
+            return a;
+        } catch (SQLException ex) {
+            Logger.getLogger(Bicycle.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return 0;
+    }
+    
+    public static boolean isBorrow(User user){
+        try {
+            Connection con = ConnectionBuilder.getConnection();
+            String sqlCmd = "select count(*) as num from bike where wrent = ?";
+            PreparedStatement stm = con.prepareStatement(sqlCmd);
+            stm.setInt(1, user.getId());
+            ResultSet rs = stm.executeQuery();
+            int a = 0;
+            if (rs.next()) {
+                a = rs.getInt("num");
+            }
+            return a>0;
+        } catch (SQLException ex) {
+            Logger.getLogger(Bicycle.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
+    }
+    
+    public static Bicycle getBorrowBike(User user){
+        try {
+            Connection con = ConnectionBuilder.getConnection();
+            String sqlCmd = "select bid from bike where wrent = ?";
+            PreparedStatement stm = con.prepareStatement(sqlCmd);
+            stm.setInt(1, user.getId());
+            ResultSet rs = stm.executeQuery();
+            int a = 0;
+            if (rs.next()) {
+                return getBicycleById(rs.getInt("bid"));
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(Bicycle.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+    
 
+}
