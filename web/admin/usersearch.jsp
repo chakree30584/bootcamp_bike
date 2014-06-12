@@ -18,18 +18,33 @@
                     $("#resultContainer").slideDown(500);
                     $("#resultViewContainer").slideUp(500);
                 });
-                $("#search").on("submit", function(e) {
-                    var output = '<div class="emailResult animated flipInX" id="123">mono_omyim@gmail.com</div>' +
-                            '<div class="emailResult animated flipInX" id="124">mono_omyim2@gmail.com</div>';
-                    $("#resultContainer").html(output);
-                    e.preventDefault();
+
+                $('#search').on("submit", function(e) {
+                    $.ajax({
+                        type: 'POST',
+                        data: $('#search').serialize(),
+                        url: 'search1',
+                        dataType: 'html',
+                        success: function(result) {
+                            $("#resultContainer").html(result);
+                        }
+                    });
                     return false;
+                    e.preventDefault();
                 });
 
                 $("#resultContainer").on("click", ".emailResult", function(e) {
-                    $("#resultContainer").slideUp(500);
-                    $("#resultViewContainer").html("ข้อมูลของ ID: " + this.id)
-                    $("#resultViewContainer").slideDown(500);
+                    $.ajax({
+                        type: 'POST',
+                        data: {"id": this.id},
+                        url: 'search2',
+                        dataType: 'html',
+                        success: function(result) {
+                            $("#resultContainer").slideUp(500);
+                            $("#resultViewContainer").slideDown(500);
+                            $("#resultViewContainer").html(result);
+                        }
+                    });
                 })
             });
         </script>
@@ -42,7 +57,7 @@
 
             <%@ include file="template_sidebar.jsp" %>
 
-            <div id="mid_menu" class="col-sm-12 col-md-12">
+            <div id="mid_menu" class="col-sm-12 col-md-12" style="height:auto; padding-bottom:40px;">
 
                 <div class="page-header">
                     <h1>User <small>Information - Search</small></h1>
@@ -52,7 +67,7 @@
                     <div class="form-group">
                         <label for="inputPassword3" class="col-sm-2 control-label">E-mail : </label>
                         <div class="col-sm-6">
-                            <input type="text" class="form-control" id="search" placeholder="search by email">
+                            <input type="text" class="form-control" id="searchbox" name="email" placeholder="search by email">
                         </div>
 
                         <div class="col-sm-4">
@@ -73,6 +88,6 @@
         </div>
 
         <%@ include file="../template_footer.jsp" %>
-        
+
     </body>
 </html>

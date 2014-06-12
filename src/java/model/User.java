@@ -227,6 +227,32 @@ public class User {
         }
         return arrUser;
     }
+    
+    public static ArrayList<User> searchUser(String email) {
+        ArrayList<User> arrUser = new ArrayList<User>();
+        User user = null;
+        try {
+            Connection con = ConnectionBuilder.getConnection();
+            String sqlCmd = "SELECT * FROM users WHERE mail like ? ORDER BY ID ASC";
+            PreparedStatement stm = con.prepareStatement(sqlCmd);
+            stm.setString(1,"%"+email+"%");
+            ResultSet rs = stm.executeQuery();
+            while (rs.next()) {
+                user = new User();
+                user.setId(rs.getInt("ID"));
+                user.setPass(rs.getString("PASSWORD"));
+                user.setName(rs.getString("NAME"));
+                user.setPosition(rs.getInt("POSITION"));
+                user.setMail(rs.getString("MAIL"));
+                user.setTel(rs.getString("TEL"));
+                user.setBan(rs.getInt("BAN"));
+                arrUser.add(user);
+            }
+        } catch (SQLException ex) {
+            System.out.println(ex);
+        }
+        return arrUser;
+    }
 
     public int getPoint() {
         int point = 0;

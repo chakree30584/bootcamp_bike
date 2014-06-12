@@ -5,6 +5,7 @@
 --%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@page import="model.User"%>
+<%@page import="model.Bicycle"%>
 <%@ include file="template_sessioncheck.jsp" %>
 <!doctype html>
 <html>
@@ -45,11 +46,13 @@
                                     <td><p>Tel.	 :<%out.print(a.getTel());%> <p></td>
                                 </tr>
                                 <tr>
-                                    <td><p>Status	 :<%if (a.getBan() > 0) {
-                                                            out.print("can rent");
-                                                        } else {
-                                                            out.print("on rent");
-                                                        }%> <p></td>
+                                    <td><p>Status	 :<%if (Bicycle.isBorrow(a)) {
+                                            out.print("ไม่สามารถยืม เพราะยืมจักรยานอยู่แล้ว");
+                                        } else {
+
+                                            out.print("สามารถยืมได้");
+
+                                        }%> <p></td>
                                 </tr>
                             </table>
                         </div>

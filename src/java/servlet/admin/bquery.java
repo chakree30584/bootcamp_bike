@@ -3,29 +3,24 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
-package servlet.user;
+package servlet.admin;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.ArrayList;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import model.Bicycle;
-import model.User;
-import org.json.JSONObject;
 
 /**
  *
  * @author chakree30584
  */
-@WebServlet(name = "borrowbike", urlPatterns = {"/portal/borrowbike"})
-public class borrowbike extends HttpServlet {
+@WebServlet(name = "bquery", urlPatterns = {"/admin/bquery"})
+public class bquery extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -40,28 +35,18 @@ public class borrowbike extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
-            HttpSession session = request.getSession();
-            User user = User.getById(((User) session.getAttribute("user")).getId());
-            JSONObject json = new JSONObject();
-            if(Bicycle.isBorrow(user)){
-                json.put("status", 0);
-                json.put("msg", "ขณะนี้คุณได้ยืมจักรยานอยู่แล้ว ไม่สามารถยืมได้อีก");
-            }else if(Bicycle.count()==0){
-                json.put("status", 0);
-                json.put("msg", "ขณะนี้ไม่มีจักรยานว่างอยู่ในระบบ ไม่สามารถยืมได้");
-            }else if(user.getPoint()<=0){
-                json.put("status", 0);
-                json.put("msg", "ยอดคะแนนคงเหลือไม่เพียงพอต่อการยืมจักรยาน ไม่สามารถยืมได้");
-            }else{
-                Bicycle.gendBike(user.getId());
-                json.put("status", 1);
-                json.put("msg", "ยืมจักรยานเรียบร้อย");
+            String a = request.getParameter("sub");
+            out.print(a);
+            ArrayList<Bicycle> os = new ArrayList();
+            if (a.trim().equals("0")) {
+                os = Bicycle.getAllBicycle();
+            } else if (a.length() > 0) {
+                os.add(Bicycle.getBicycleById(Integer.parseInt(a)));
             }
-            Thread.sleep(1000);
-            out.print(json);
-            out.flush();
-        } catch (InterruptedException ex) {
-            Logger.getLogger(borrowbike.class.getName()).log(Level.SEVERE, null, ex);
+
+            request.setAttribute("query", os);
+
+            getServletContext().getRequestDispatcher("/admin/bikeq.jsp").forward(request, response);
         }
     }
 

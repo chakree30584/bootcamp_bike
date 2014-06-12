@@ -21,10 +21,10 @@ public class ConnectionBuilder {
     //static String driver = "org.apache.derby.jdbc.ClientDriver";
     //static String user = "app";
     //static String pass = "app";
-    static String url = "jdbc:mysql://localhost:3306/bike";
+    static String url = "jdbc:mysql://server.chakree.me:3306/bootcamp_bike";
     static String driver = "com.mysql.jdbc.Driver";
-    static String user = "root";
-    static String pass = "";
+    static String user = "bootcamp_bike";
+    static String pass = "bootcamp";
     public static Connection getConnection(){
         try {
             Class.forName(driver);
