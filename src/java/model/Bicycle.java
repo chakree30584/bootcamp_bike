@@ -68,7 +68,7 @@ public class Bicycle {
 
     public static Bicycle getBicycleById(int bid) {
         Bicycle bike = null;
-        String sqlCmd = "SELECT * FROM BIKE WHERE BID LIKE ?";
+        String sqlCmd = "SELECT * FROM bike WHERE BID LIKE ?";
         try {
             Connection con = ConnectionBuilder.getConnection();
             PreparedStatement stm = con.prepareStatement(sqlCmd);

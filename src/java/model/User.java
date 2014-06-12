@@ -98,7 +98,7 @@ public class User {
 
     public static User login(String mail, String password) {
         User user = null;
-        String sqlCmd = "SELECT * FROM USERS WHERE MAIL LIKE ? AND PASSWORD LIKE ?";
+        String sqlCmd = "SELECT * FROM users WHERE MAIL LIKE ? AND PASSWORD LIKE ?";
         try {
             Connection con = ConnectionBuilder.getConnection();
             PreparedStatement stm = con.prepareStatement(sqlCmd);
@@ -123,7 +123,7 @@ public class User {
 
     public static User getUserByMail(String mail) {
         User user = null;
-        String sqlCmd = "SELECT * FROM USERS WHERE MAIL LIKE ?";
+        String sqlCmd = "SELECT * FROM users WHERE MAIL LIKE ?";
         try {
             Connection con = ConnectionBuilder.getConnection();
             PreparedStatement stm = con.prepareStatement(sqlCmd);
@@ -146,7 +146,7 @@ public class User {
     }
 
     public static int getNewId() {
-        String sqlCmd = "SELECT id FROM USERS ORDER BY ID DESC LIMIT 1";
+        String sqlCmd = "SELECT id FROM users ORDER BY ID DESC LIMIT 1";
         try {
             Connection con = ConnectionBuilder.getConnection();
             PreparedStatement stm = con.prepareStatement(sqlCmd);
@@ -163,7 +163,7 @@ public class User {
     public static boolean addUser(User newuser) {
         int status = 0;
         if (getUserByMail(newuser.getMail()) == null) {
-            String sqlCmd = "INSERT INTO USERS(`ID`,`PASSWORD`,`NAME`,`POSITION`,`MAIL`,`TEL`,`BAN`) "
+            String sqlCmd = "INSERT INTO users(`ID`,`PASSWORD`,`NAME`,`POSITION`,`MAIL`,`TEL`,`BAN`) "
                     + " VALUES(?,?,?,?,?,?,0);";
             try {
                 Connection con = ConnectionBuilder.getConnection();
@@ -184,7 +184,7 @@ public class User {
 
     public boolean updateUser() {
         int status = 0;
-        String sqlCmd = "UPDATE USERS SET `PASSWORD` = ?, `NAME` = ?, POSITION = ?, `TEL` = ?, ban= ? where id = ?";
+        String sqlCmd = "UPDATE users SET `PASSWORD` = ?, `NAME` = ?, POSITION = ?, `TEL` = ?, ban= ? where id = ?";
         try {
             Connection con = ConnectionBuilder.getConnection();
             PreparedStatement stm = con.prepareStatement(sqlCmd);
@@ -256,7 +256,7 @@ public class User {
 
     public int getPoint() {
         int point = 0;
-        String sqlCmd = "SELECT SUM(`POINT`) AS POINT FROM POINT WHERE ID = ?";
+        String sqlCmd = "SELECT SUM(`POINT`) AS POINT FROM point WHERE ID = ?";
         try {
             Connection con = ConnectionBuilder.getConnection();
             PreparedStatement stm = con.prepareStatement(sqlCmd);
